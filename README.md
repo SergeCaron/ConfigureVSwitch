@@ -21,13 +21,13 @@ No white space is allowed in any of the parameters. Comments can be inserted usi
 Example configuration file:
 
 ```
-	# VLAN 201 reserved for support staff
-	201	Support	(10.30.0.0/16;10.200.200.241),(192.168.0.0/16;10.200.200.241)
-	# Projects
-	400	Project_400
-	401	Project_401
-	# Default untagged entry
-	0	Untagged
+# VLAN 201 reserved for support staff
+201	Support	(10.30.0.0/16;10.200.200.241),(192.168.0.0/16;10.200.200.241)
+# Projects
+400	Project_400
+401	Project_401
+# Default untagged entry
+0	Untagged
 ```
 
 In the above example, the gateway 10.200.200.241 must be accessible using the effective routing table when the NIC configured for VLAN 201 is enabled. When this NIC is disabled, the two subnets in the example are not reachable.
