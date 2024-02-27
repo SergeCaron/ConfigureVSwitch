@@ -13,7 +13,7 @@ The script relies on a configuration file enumerating the desired VLANs in the f
 where
 - <VLAN_ID> is the VLAN identifier to assign to a "port" of the virtual switch
 - <VLAN_Description> is a name that will be assigned to this "port"
-- [...] is an optional list of network routes that will be accessible from this "port".
+- [...] is an **optional** list of network routes that will be accessible from this "port".
 Each tuple is enclosed in () and is composed of a subnet specification and a gateway IP that will be accessible from this port. These are delimited by a ; within the tuple and a comma separated list of tuples can be specified. Although both IPv4 and IPv6 subnets and addresses can be specified, the parsing here is minimal and some errors will only get caught at runtime.
 
 No white space is allowed in any of the parameters. Comments can be inserted using the usual # caracter.
@@ -61,7 +61,7 @@ where:
 
 The script can be invoked with a righ-click "Execute with PowerShell" and will attempt privilege escalation if possible.
 
-On entry, the user must select the configuration file that will be used. If no file is selected, te script defaults to a simple untagged configuration.
+On entry, the user must select the configuration file that will be used. If no file is selected, the script defaults to a simple untagged configuration.
 
 The script displays a grid-view of the available VLANs and the user MUST select the desired VLANs in this instance. If the user aborts at this point, the virtual management switch is deleted.
 
