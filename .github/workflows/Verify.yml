@@ -16,6 +16,7 @@ jobs:
       # Checkout root files only
       - uses: actions/checkout@v4
       - name: Install PSScriptAnalyzer module
+        # use PowerShell
         shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
@@ -27,11 +28,11 @@ jobs:
           $errors   = $issues.Where({$_.Severity -eq 'Error'})
           $warnings = $issues.Where({$_.Severity -eq 'Warning'})
           if ($errors -or $warnings) {  Write-Error "There were $($errors.Count) errors and $($warnings.Count) warnings total." -ErrorAction Stop  }
-                ForEach ($File in $(Get-ChildItem -Filter *.ps1 -File -Name)) { 
-                $Script = $(Get-Content $File -Encoding UTF8) -join "`r`n"
-                $Revision = Invoke-Formatter -ScriptDefinition $Script -Settings $Rules
-                $Revised = “Revised$File”
-                Out-File -Encoding UTF8 -FilePath $Revised -Force -InputObject $Revision
- #               Comparer $File avec $Revised
-                If (nDifferences) { Write-Error "This code does not conform to the project formatting rules.” -ErrorAction Stop }
-}
+            ForEach ($File in $(Get-ChildItem -Filter *.ps1 -File -Name)) { 
+            $Script = $(Get-Content $File -Encoding UTF8) -join "`r`n"
+            $Revision = Invoke-Formatter -ScriptDefinition $Script -Settings $Rules
+            $Revised = “Revised$File”
+            Out-File -Encoding UTF8 -FilePath $Revised -Force -InputObject $Revision
+            # Comparer $File avec $Revised
+            If ($nDifferences) { Write-Error "This code does not conform to the project formatting rules.” -ErrorAction Stop }
+            }
