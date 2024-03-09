@@ -31,8 +31,6 @@ jobs:
             ForEach ($File in $(Get-ChildItem -Filter *.ps1 -File -Name)) { 
             $Script = $(Get-Content $File -Encoding UTF8) -join "`r`n"
             $Revision = Invoke-Formatter -ScriptDefinition $Script -Settings $Rules
-            $Revised = “Revised$File”
-            Out-File -Encoding UTF8 -FilePath $Revised -Force -InputObject $Revision
-            # Comparer $File avec $Revised
-            If ($nDifferences) { Write-Error "This code does not conform to the project formatting rules.” -ErrorAction Stop }
+            Out-File -Encoding UTF8 -FilePath $File -Force -InputObject $Revision
+            git diff --exit-code
             }
