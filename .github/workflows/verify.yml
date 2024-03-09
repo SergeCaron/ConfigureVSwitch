@@ -35,6 +35,14 @@ jobs:
           Set-PSRepository PSGallery -InstallationPolicy Trusted
           Install-Module PSScriptAnalyzer -Force -ErrorAction Stop
 
+      # Verify the rules set
+      - name: Validate FormattingRules
+        shell: pwsh
+        run: |
+          Invoke-ScriptAnalyzer -Path FormattingRules.psd1 -Recurse -Outvariable ProjectIssues
+          $Glitches = $ProjectIssues.Where({$_.Severity -eq 'Error' -or $_.Severity -eq 'Warning'})
+          if ($Glitches.Count) {  Write-Error "There are $($Glitches.Count) errors and warnings in FormattingRules.psd1." -ErrorAction Stop  }
+
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
