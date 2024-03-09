@@ -1,12 +1,19 @@
-Approve-with-PSScriptAnalyzer:
+name: verify
+
+on:
+  pull_request:
+    branches:
+      - dev
+  push:
+    tags:
+      - "*"
+
+jobs:
+  Approve-with-PSScriptAnalyzer:
     name: Install and run PSScriptAnalyzer
     runs-on: ubuntu-latest
     steps:
-
-                    # Checkout root files only
-         - uses: actions/checkout@v4
-           with:
-             sparse-checkout: .
+      # Checkout root files only
       - uses: actions/checkout@v4
       - name: Install PSScriptAnalyzer module
         shell: pwsh
