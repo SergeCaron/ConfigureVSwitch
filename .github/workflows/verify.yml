@@ -43,9 +43,13 @@ jobs:
           $Glitches = $ProjectIssues.Where({$_.Severity -eq 'Error' -or $_.Severity -eq 'Warning'})
           if ($Glitches.Count) {  Write-Error "There are $($Glitches.Count) errors and warnings in FormattingRules.psd1." -ErrorAction Stop  }
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      # Validate PowerShell scripts
+      - name: Verify PowerShell script formatting
+        shell: pwsh
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          ForEach ($File in $(Get-ChildItem -Filter *.ps1 -File -Name)) {
+          $Script = $(Get-Content $File -Encoding UTF8) -join "`r`n"
+          $Revision = Invoke-Formatter -ScriptDefinition $Script -Settings FormattingRules.psd1
+          Out-File -Encoding UTF8 -FilePath $File -Force -InputObject $Revision
           git diff --exit-code
+          }
