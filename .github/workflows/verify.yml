@@ -53,4 +53,4 @@ jobs:
           $Revision = Invoke-Formatter -ScriptDefinition $Script -Settings FormattingRules.psd1
           Out-File -Encoding UTF8 -FilePath $File -Force -InputObject $Revision
           }
-          #git diff --exit-code
+          git diff --exit-code
