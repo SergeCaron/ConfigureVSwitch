@@ -18,6 +18,9 @@ param (
 #  Setup the NewLine delimiter
 $Delimiter = If ($UseCRLF.IsPresent) { "`r`n" } else { "`n" }
 
+# What are we running ?
+$ThisPS = $PSVersionTable.PSVersion.Major.ToString() + "." + $PSVersionTable.PSVersion.Minor.ToString()
+
 $Junk = $ErrorActionPreference # Tuck this away ;-)
 $ErrorActionPreference = "Stop"
 
@@ -50,9 +53,14 @@ Try {
 			# Starting from version 6 PowerShell supports the UTF8NoBOM encoding both for "set-content" and "out-file"
 			# and uses this as default encoding. In version 5 however, a byte order marker is always inserted.
 			# This is the equivalent of 
-			#	Out-File -Encoding UTF8NoBOM -FilePath $RevisedScriptName -Force -InputObject $Revision
+			#	Out-File -Encoding UTF8NoBOM -FilePath $RevisedScriptName -Force -InputObject $Revision -NoNewLine
 			$Output = New-Object Text.UTF8Encoding
-			Set-Content -Path $RevisedScriptName -Force -Value $Output.GetBytes($Revision) -Encoding Byte 
+			If ($ThisPS -gt "5.1") {
+				Set-Content -Path $RevisedScriptName -Force -Value $Output.GetBytes($Revision) -AsByteStream
+			}
+			Else {
+				Set-Content -Path $RevisedScriptName -Force -Value $Output.GetBytes($Revision) -Encoding Byte
+			}
 
 			# Windows-oriented file compare : the default dates way back then...
 			& "$([System.Environment]::SystemDirectory)\FC.EXE" /A /N /L "$($FileBrowser.FileName)" "$RevisedScriptName"
