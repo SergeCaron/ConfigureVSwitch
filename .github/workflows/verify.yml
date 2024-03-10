@@ -49,8 +49,9 @@ jobs:
         run: |
           ForEach ($File in $(Get-ChildItem -Filter *.ps1 -File -Name)) {
           Write-Host "Processing $File ..."
-          $Script = $(Get-Content $File -Encoding UTF8) -join "`r`n"
+          $Script = $($(Get-Content $File -Encoding UTF8) -join "`n") + "`n"
           $Revision = Invoke-Formatter -ScriptDefinition $Script -Settings FormattingRules.psd1
-          Out-File -Encoding UTF8 -FilePath $File -Force -InputObject $Revision
+          $Output = New-Object Text.UTF8Encoding
+          Set-Content -Path $File -Force -Value $Output.GetBytes($Revision) -Encoding Byte 
           }
           git diff --exit-code

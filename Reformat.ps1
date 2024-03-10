@@ -1,5 +1,5 @@
 ##******************************************************************
-## Release date: 2024.03.09
+## Release date: 2024.03.10
 ##
 ## Copyright (c) 2024 PC-Évolution enr.
 ## This code is licensed under the GNU General Public License (GPL).
@@ -10,6 +10,13 @@
 ## PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 ##
 ##******************************************************************
+param (
+	[parameter()]
+	[switch]$UseCRLF
+)
+
+#  Setup the NewLine delimiter
+$Delimiter = If ($UseCRLF.IsPresent) { "`r`n" } else { "`n" }
 
 $Junk = $ErrorActionPreference # Tuck this away ;-)
 $ErrorActionPreference = "Stop"
@@ -34,12 +41,21 @@ Try {
 
 		# Reformat this script :
 		If ( ![string]::IsNullOrEmpty($FileBrowser.FileName) ) {
-			$Script = $(Get-Content $FileBrowser.FileName -Encoding UTF8) -join "`r`n"
+			# Strip line delimiters from the input file and use a uniform convention
+			$Script = ($(Get-Content $FileBrowser.FileName -Encoding UTF8) -join $Delimiter) + $Delimiter
+			# Reformat the inpt script
 			$Revision = Invoke-Formatter -ScriptDefinition $Script -Settings $Rules
-			$RevisedScript = $($(Split-Path -Parent $FileBrowser.FileName) + "\Reformatted" + $FileBrowser.SafeFileName)
-			Out-File -Encoding UTF8 -FilePath $RevisedScript -Force -InputObject $Revision
+			$RevisedScriptName = $($(Split-Path -Parent $FileBrowser.FileName) + "\Reformatted" + $FileBrowser.SafeFileName)
+
+			# Starting from version 6 PowerShell supports the UTF8NoBOM encoding both for "set-content" and "out-file"
+			# and uses this as default encoding. In version 5 however, a byte order marker is always inserted.
+			# This is the equivalent of 
+			#	Out-File -Encoding UTF8NoBOM -FilePath $RevisedScriptName -Force -InputObject $Revision
+			$Output = New-Object Text.UTF8Encoding
+			Set-Content -Path $RevisedScriptName -Force -Value $Output.GetBytes($Revision) -Encoding Byte 
+
 			# Windows-oriented file compare : the default dates way back then...
-			& "$([System.Environment]::SystemDirectory)\FC.EXE" /A /N /L "$($FileBrowser.FileName)" "$RevisedScript"
+			& "$([System.Environment]::SystemDirectory)\FC.EXE" /A /N /L "$($FileBrowser.FileName)" "$RevisedScriptName"
 			Write-Host "Done!"
 		}
 		else { Write-Warning "No file selected ;)" }
@@ -56,5 +72,5 @@ Finally {
 	$ErrorActionPreference = $Junk
 }
 
-# Wait for the user's acknowledgement if running directly from terminal
-If ($script:MyInvocation.CommandOrigin -eq "RunSpace") { Pause }
+# Wait for the user's acknowledgement if "running with PowerShell"
+If ($script:MyInvocation.CommandOrigin -eq "Internal") { Pause }
