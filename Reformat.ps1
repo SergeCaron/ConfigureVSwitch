@@ -18,8 +18,8 @@ param (
 #  Setup the NewLine delimiter
 $Delimiter = If ($UseCRLF.IsPresent) { "`r`n" } else { "`n" }
 
-# What are we running ?
-$ThisPS = $PSVersionTable.PSVersion.Major.ToString() + "." + $PSVersionTable.PSVersion.Minor.ToString()
+# What are we running ? Note: conversion uses the invariant culture
+$ThisPS = [decimal]$($PSVersionTable.PSVersion.Major.ToString() + "." + $PSVersionTable.PSVersion.Minor.ToString())
 
 $Junk = $ErrorActionPreference # Tuck this away ;-)
 $ErrorActionPreference = "Stop"
@@ -55,7 +55,7 @@ Try {
 			# This is the equivalent of 
 			#	Out-File -Encoding UTF8NoBOM -FilePath $RevisedScriptName -Force -InputObject $Revision -NoNewLine
 			$Output = New-Object Text.UTF8Encoding
-			If ($ThisPS -gt "5.1") {
+			If ($ThisPS -gt 5.1) {
 				Set-Content -Path $RevisedScriptName -Force -Value $Output.GetBytes($Revision) -AsByteStream
 			}
 			Else {
