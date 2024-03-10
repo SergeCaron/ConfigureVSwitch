@@ -52,6 +52,9 @@ jobs:
           $Script = $($(Get-Content $File -Encoding UTF8) -join "`n") + "`n"
           $Revision = Invoke-Formatter -ScriptDefinition $Script -Settings FormattingRules.psd1
           $Output = New-Object Text.UTF8Encoding
-          Set-Content -Path $File -Force -Value $Output.GetBytes($Revision) -Encoding Byte 
+          # Prior to PowerShell V6
+          # Set-Content -Path $File -Force -Value $Output.GetBytes($Revision) -Encoding Byte
+          # Current PowerShell V7.x on GitHub
+          Set-Content -Path $File -Force -Value $Output.GetBytes($Revision) -AsByteStream
           }
           git diff --exit-code
