@@ -34,6 +34,7 @@ jobs:
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
           Install-Module PSScriptAnalyzer -Force -ErrorAction Stop
+          Write-Output $("Using Powershell version: " + $PSVersionTable.PSVersion.Major.ToString() + "." + $PSVersionTable.PSVersion.Minor.ToString())
 
       # Verify the rules set
       - name: Validate FormattingRules
