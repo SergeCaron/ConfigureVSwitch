@@ -5,7 +5,7 @@ This script implements a fixed set of coding standards for PowerShell scripts.
 The formatting rules are defined in the data file *FormattingRules.psd1* and must be placed in the same directory as the *Reformat.ps1* script. The rules are documented *[here](https://github.com/PowerShell/PSScriptAnalyzer/tree/master/docs/Rules)*.
 
 This is a Windows-oriented script:
-- the input file is presumed coded UTF-8 ad the output file is explicitly coded UTF-8 without a Byte Order Marker (BOM). On input, your editor of choice may not automatically change the file encoding to UTF-8 : see this *[UTF-8 Debugging Chart](https://www.i18nqa.com/debug/utf8-debug.html)* for tell-tale signs of corruption.
+- the input file is presumed coded UTF-8 and the output file is explicitly coded UTF-8 without a Byte Order Marker (BOM). On input, your editor of choice may not automatically change the file encoding to UTF-8 : see this *[UTF-8 Debugging Chart](https://www.i18nqa.com/debug/utf8-debug.html)* for tell-tale signs of corruption.
 - by default, line delimiters are changed to LF. When the script is invoked from the terminal command line, there is a -UseCRLF switch to enable CFLF as th line delimiter. Note that Git may revert LF to CRLF.
 
 ## Outside VScode
