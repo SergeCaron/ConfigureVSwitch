@@ -58,4 +58,6 @@ jobs:
           # Current PowerShell V7.x on GitHub
           Set-Content -Path $File -Force -Value $Output.GetBytes($Revision) -AsByteStream
           }
+          git config --global core.autocrlf false
+          git config --global core.eol lf
           git diff --exit-code
