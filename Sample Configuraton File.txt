@@ -1,0 +1,7 @@
+# VLAN 201 reserved for support staff
+201	Support	(10.30.0.0/16;10.200.200.241),(192.168.0.0/16;10.200.200.241)
+# Projects
+400	Project_400
+401	Project_401
+# Default untagged entry
+0	Untagged
