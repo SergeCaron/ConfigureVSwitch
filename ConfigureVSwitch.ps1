@@ -130,7 +130,7 @@ If (! ($RequiredVLANs.ID -contains 0) )	{
 
 # Sanity check: we should only have VLAN ID, name, and optional routes
 If ( ($RequiredVLANs | Get-Member -MemberType NoteProperty | Measure-Object).Count -ne 3) {
-	# We inherited some other porperty: don't trust this cinfiguration file.
+	# We inherited some other property: don't trust this cinfiguration file.
 	Write-Warning $($FileBrowser.FileName + " is not properly formatted.")
 	Pause
 	Exit 911
