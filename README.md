@@ -152,3 +152,24 @@ InterfaceMetric : 25
 Press Enter to continue...:
 
 ```
+## VLAN enabled NICs
+
+Some NICs natively support connection to **ONE** VLAN and do not require the use of Hyper-V.
+
+The following test code will show such adapters:
+````
+
+Try {
+	[System.Object] $VlanCapable = Get-NetAdapterAdvancedProperty -RegistryKeyword "VlanID" -AllProperties -ErrorAction Stop
+  }
+Catch [Microsoft.PowerShell.Cmdletization.Cim.CimJobException] {
+	Write-Host "VLAN configuration not allowed in any installed NIC"
+	Exit 911
+  }
+  
+[System.Object] $Adapter = (Get-NetAdapter -InterfaceDescription $VlanCapable.InterfaceDescription `
+					| Where { $_.Status -eq "UP" -and $_.PhysicalMediaType -eq "802.3" })
+
+$Adapter
+````
+
